@@ -3,3 +3,24 @@
     margin: 0px;
     box-sizing: border-box;
 }
+.wrapper {
+    max-width: 1440px;
+    margin: 0 auto;
+
+}
+.audio-player {
+    height: 100vh;
+    background-color: rgb(55, 55, 55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-image: url('../img/img-1.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; */
+}
+.audio-player__pic img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
