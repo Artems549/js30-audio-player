@@ -44,7 +44,6 @@ p {
     height: 300px;
     object-fit: cover;
     border-radius: 20px 20px 0px 0px;
-   
 }
 .song-name {
     margin-top: 15px;
@@ -146,3 +145,43 @@ p {
     object-fit: cover;
     filter: blur(7px);
 }
+footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+}
+.footer__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 50px 10px 50px
+}
+.footer__item:nth-child(1) a svg,
+.footer__item:nth-child(3) a svg {
+    fill: #FFF;
+    height: auto;
+    transition: 0.1s linear;
+}
+.footer__item:nth-child(1) a svg {
+    width: 60px;
+}
+.footer__item:nth-child(3) a svg {
+    width: 80px;
+}
+.footer__item:nth-child(1) a svg:hover,
+.footer__item:nth-child(3) a svg:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+}
+.footer__item:nth-child(2) p {
+    font-size: 15px;
+    line-height: 110%;
+    color: white;
+    font-weight: 900;
+    letter-spacing: 5px;
+    margin-left: 20px;
+}
+
