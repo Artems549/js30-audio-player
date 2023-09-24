@@ -5,8 +5,13 @@ const songName = document.querySelector('.song-name__song');
 const songerName = document.querySelector('.song-name__songer');
 const buttonPlay = document.querySelector('.buttons-play');
 const buttonPrev = document.querySelector('.buttons-prev')
-const buttonNextSong = document.querySelector('.buttons-next')
+const buttonNextSong = document.querySelector('.buttons-next');
+const totalTime = document.querySelector('.time-total')
+const actualTime = document.querySelector('.time-actual');
+const progressBarMain = document.querySelector('.progress-audio__bar')
+const progressBar = document.querySelector('.progress-audio__bar > div')
 let songNum = 0;
+let isPlaying = false;
 let songs = [
     {
         songerName: 'Chris Cornell',
@@ -45,30 +50,107 @@ let songs = [
     }
 ]
 
+
 function initialization() {
     songPic.src = `img/${songs[songNum].songPic}`;
     playerBg.src = `img/${songs[songNum].songPicBg}`;
     songName.innerHTML = songs[songNum].songName;
     songerName.innerHTML = songs[songNum].songerName;
     audio.src = `source/${songs[songNum].songPath}`
+    fullTimeSong()
 }
 initialization()
-function nextSong() {
-    songNum++;
-    audio.play()
+function prevSong() {
+    if(songNum === 0) {
+        stopSong();
+        songNum = songs.length -1;
+        initialization();
+        playSong();
+    } else if(songNum !== 0) {
+        stopSong();
+        songNum--;
+        initialization();
+        playSong();
+    }
 }
-buttonPrev.addEventListener('click', function() {
+function nextSong() {
+    if(songNum === songs.length -1) {
+        stopSong();
+        songNum = 0;
+        initialization();
+        playSong();
+    } else if(songNum !== songs.length -1) {
+        stopSong();
+        songNum++;
+        initialization();
+        playSong();
+    }
+}
+function playSong() {
+    audio.play();
+    buttonPlay.classList.add('active-song');
+    isPlaying = true;
+}
+function stopSong() {
     audio.pause();
-    songNum--
-    initialization()
-    audio.play()
-})
+    buttonPlay.classList.remove('active-song');
+    isPlaying = false;
+}
+function progress(e) {
+    const fullTime = e.srcElement.duration;
+    const currentTime = e.srcElement.currentTime;
+    const barPercent = (currentTime / fullTime) * 100;
+    progressBar.style.width = `${barPercent}%`
+    let minutes = Math.floor(currentTime / 60);
+    let seconds = Math.floor(currentTime % 60);
+    actualTime.textContent = `0${minutes}:${seconds < 10 ? '0':''}${seconds}`
+}
+function setBar(e) {
+    const width = progressBarMain.clientWidth;
+    const clickX = e.offsetX;
+    const duration = audio.duration;
+    audio.currentTime = (clickX / width) * duration
+}
+function fullTimeSong() {
+    audio.addEventListener('loadedmetadata', function () {
+        const duration = audio.duration;
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
+        totalTime.textContent = `0${minutes}:${seconds < 10 ? '0':''}${seconds}`
+    })
+}
+function moveMouse() {
+    let isMousePassed = false
+    progressBarMain.addEventListener('mousedown', function(e) {
+        if(e.button === 0) {
+            isMousePassed = true
+        }
+    })
+    progressBarMain.addEventListener('mouseup', function() {
+        if(isMousePassed) {
+            isMousePassed = false;
+        }
+    })
+    progressBarMain.addEventListener('mousemove', function(e) {
+        if(isMousePassed) {
+            const width = progressBarMain.clientWidth;
+            let posX = e.offsetX;
+            const duration = audio.duration;
+            audio.currentTime = (posX / width) * duration
+        }
+    })
+}
+
+
 buttonPlay.addEventListener('click', function() {
-    audio.play()
+    if(!isPlaying) {
+        playSong()
+    } else {
+       stopSong();
+    }
 })
-buttonNextSong.addEventListener('click', function() {
-    audio.pause();
-    songNum++
-    initialization()
-    audio.play()
-})
+buttonPrev.addEventListener('click', prevSong)
+buttonNextSong.addEventListener('click', nextSong)
+audio.addEventListener('timeupdate', progress)
+progressBarMain.addEventListener('click', setBar)
+moveMouse()
